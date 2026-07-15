@@ -1,0 +1,4 @@
+interface:
+  display_name: "MATH 1554 Canvas Lesson"
+  short_description: "Build transcript-grounded Canvas lecture lessons"
+  default_prompt: "Use $build-math1554-lesson to create and validate the Canvas lesson for topic 4.3."

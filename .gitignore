@@ -1,0 +1,7 @@
+.direnv
+.venv
+.env
+__pycache__/
+node_modules/
+.cache/
+reports/axe-results.json
