@@ -2,6 +2,7 @@
 """MATH 2551 source preparation, isolated from the MATH 1554 workflow."""
 from __future__ import annotations
 
+import argparse
 import html
 import importlib.util
 import json
@@ -78,6 +79,16 @@ def iframe_metadata(body: str) -> list[dict[str, str]]:
                 {
                     "title": frame.get("title", "").strip() or "Untitled Kaltura video",
                     "external_tool_url": external_tool_url,
+                }
+            )
+            continue
+        entry_id = parse_qs(parts.query).get("entry_id", [""])[0]
+        if entry_id and "kaltura" in parts.netloc.lower():
+            frames.append(
+                {
+                    "title": frame.get("title", "").strip() or "Untitled Kaltura video",
+                    "entry_id": entry_id,
+                    "embed_url": source,
                 }
             )
     return frames
@@ -174,6 +185,11 @@ def javascript_redirect(response: requests.Response) -> str | None:
 def download_kaltura_caption(
     canvas: Math2551CanvasClient, frame: dict[str, str]
 ) -> tuple[str, dict[str, Any]]:
+    if "external_tool_url" not in frame:
+        raise base.PipelineError(
+            "This Topic page includes a direct Kaltura embed whose captions require a browser-authenticated "
+            "player. Export every English caption file and rerun prepare with --caption-file for each video."
+        )
     launch_url = canvas.external_tool_sessionless_launch(frame["external_tool_url"])
     media_page = complete_kaltura_launch(canvas.session, launch_url)
     entry_id = ""
@@ -250,11 +266,55 @@ def lesson_filename(source: dict[str, Any], target: dict[str, Any]) -> str:
     return f"{number}-{base.slugify(title)}.html"
 
 
+def imported_caption_downloader(paths: list[str]):
+    """Create a caption downloader backed by user-exported local files."""
+    position = 0
+
+    def download(_: Math2551CanvasClient, frame: dict[str, str]) -> tuple[str, dict[str, Any]]:
+        nonlocal position
+        if position >= len(paths):
+            raise base.PipelineError(
+                "Fewer --caption-file values were supplied than Kaltura videos on the Topic page."
+            )
+        path = Path(paths[position]).expanduser().resolve()
+        position += 1
+        if not path.is_file():
+            raise base.PipelineError(f"Imported caption file does not exist: {path}")
+        raw = path.read_bytes().decode("utf-8-sig", errors="replace")
+        if not raw.strip():
+            raise base.PipelineError(f"Imported caption file is empty: {path}")
+        return raw, {
+            "title": frame["title"],
+            "entry_id": None,
+            "caption_asset_id": None,
+            "language": "English",
+            "format": base.caption_extension(raw).lstrip("."),
+            "launch_source": "Imported browser-authenticated caption export",
+        }
+
+    return download
+
+
 def prepare(args: Any) -> int:
+    def resolve_with_caption_count(
+        pages: list[dict[str, Any]], topic: str, target_override: str | None = None
+    ) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, str]]]:
+        resolved = resolve_topic(pages, topic, target_override)
+        if args.caption_file and len(args.caption_file) != len(resolved[2]):
+            raise base.PipelineError(
+                f"Expected {len(resolved[2])} --caption-file values, one for each Kaltura video; "
+                f"received {len(args.caption_file)}."
+            )
+        return resolved
+
     originals = (base.CanvasClient, base.resolve_topic, base.download_kaltura_caption, base.lesson_filename)
     base.CanvasClient = Math2551CanvasClient
-    base.resolve_topic = resolve_topic
-    base.download_kaltura_caption = download_kaltura_caption
+    base.resolve_topic = resolve_with_caption_count
+    base.download_kaltura_caption = (
+        imported_caption_downloader(args.caption_file)
+        if args.caption_file
+        else download_kaltura_caption
+    )
     base.lesson_filename = lesson_filename
     try:
         return base.prepare(args)
@@ -266,6 +326,16 @@ def main() -> int:
     base.DEFAULT_COURSE_ID = COURSE_ID
     parser = base.parser()
     parser.description = "Prepare transcript-grounded MATH 2551 lessons from Canvas Kaltura sources."
+    prepare_parser = next(
+        action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
+    ).choices["prepare"]
+    prepare_parser.add_argument(
+        "--caption-file",
+        action="append",
+        default=[],
+        metavar="PATH",
+        help="Use an exported English caption file for each Topic video, in page order.",
+    )
     args = parser.parse_args()
     if args.command != "prepare":
         raise base.PipelineError(

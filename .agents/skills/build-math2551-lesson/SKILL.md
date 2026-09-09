@@ -19,6 +19,12 @@ direnv exec . sh -c 'unset VIRTUAL_ENV; "$PWD/.venv/bin/python" .agents/skills/b
 
 The command is read-only with respect to Canvas. It may create an ignored local source bundle only after every caption has been retrieved and normalized.
 
+If the Canvas API launch does not expose captions but an authenticated browser player does, export or download each English caption file in page order and prepare from those files instead:
+
+```sh
+direnv exec . sh -c 'unset VIRTUAL_ENV; "$PWD/.venv/bin/python" .agents/skills/build-math2551-lesson/scripts/canvas_lesson.py prepare 4.3 --target-page-slug lesson-4-dot-3-partial-derivatives --caption-file /path/to/lesson-1.srt --caption-file /path/to/lesson-2.srt'
+```
+
 ## Source requirements
 
 Do not draft, validate, render, or return lesson HTML until preparation has produced a complete `manifest.json`, `source-bundle.md`, and nonempty raw caption file for every source video. Captions are the mathematical source of truth.
