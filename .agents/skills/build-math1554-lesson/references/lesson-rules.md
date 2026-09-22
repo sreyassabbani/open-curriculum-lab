@@ -102,6 +102,7 @@ Wrap every table in `<div class="dp-table-scroll">`. Use `width: 100%; border-co
 ## Mathematical formatting
 
 - Use `\(...\)` for short inline expressions and `\[...\]` for important displayed formulas.
+- For Canvas rendering failures, use the verified native-markup fallback and live verification procedure in [canvas-math.md](canvas-math.md); preserve inline versus display semantics when converting.
 - Use bold vectors consistently: `\mathbf{x}`, `\mathbf{b}`, and `\mathbf{0}`.
 - Use `\mathbb{R}^n`, `\operatorname{Col} A`, `\operatorname{Nul} A`, `\dim H`, and `\operatorname{rank} A` consistently.
 - Escape every matrix alignment ampersand as `&amp;` inside HTML.

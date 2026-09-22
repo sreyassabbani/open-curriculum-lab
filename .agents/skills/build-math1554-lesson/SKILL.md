@@ -21,6 +21,10 @@ Use `CANVAS_ACCESS_TOKEN` from the repository `.env`. Never print or copy that t
 
 ## Prepare the source bundle
 
+Do not draft, validate, render, or return lesson HTML until preparation has produced a complete source bundle. The required evidence is an existing `manifest.json`, `source-bundle.md`, and every raw caption file named in the manifest. A lecture-video page, topic title, common knowledge, or an empty target notes page is not a substitute for captions.
+
+If preparation cannot authenticate, resolve a unique topic, locate an existing target page, or download and normalize every caption, stop and report the specific missing prerequisite. Do not write a speculative lesson or proceed with a partial run. Read-only Canvas and Kaltura requests are permitted during preparation; Canvas writes remain prohibited unless the user later gives explicit publication confirmation.
+
 Run:
 
 ```sh
@@ -29,7 +33,7 @@ nix develop --command python .agents/skills/build-math1554-lesson/scripts/canvas
 
 Accept topic forms such as `4.3`, `M4W11T1`, or `Orthogonal Projections`. If resolution is ambiguous, show the candidates and ask the user to choose; do not guess. Use `--target-page-slug SLUG` only when the user identifies an existing lecture-notes page.
 
-Read the returned `manifest.json`, `source-bundle.md`, and raw caption files. Treat the raw captions as the mathematical source of truth and use the normalized bundle for convenient reading. Do not add facts merely because they are commonly associated with the topic.
+Read the returned `manifest.json`, `source-bundle.md`, and raw caption files. Confirm that the manifest lists at least one video and that every listed raw and normalized path exists and is nonempty. Treat the raw captions as the mathematical source of truth and use the normalized bundle for convenient reading. Do not add facts merely because they are commonly associated with the topic.
 
 ## Draft the lesson
 
@@ -53,6 +57,8 @@ Request only a structured list of unsupported claims, missing source concepts, m
 Revise the lesson for every confirmed issue. Stop after three write/review cycles and report unresolved issues instead of weakening the rubric.
 
 ## Validate and preview
+
+Before preparing Canvas math or diagnosing rendering, read [references/canvas-math.md](references/canvas-math.md). Local MathJax preview success does not establish that the saved Canvas page renders correctly; verify inline math and display layout in the live page after rendering completes.
 
 Run deterministic validation:
 

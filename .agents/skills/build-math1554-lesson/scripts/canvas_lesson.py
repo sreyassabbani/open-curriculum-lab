@@ -6,7 +6,6 @@ import difflib
 import hashlib
 import html
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -18,7 +17,7 @@ from urllib.parse import parse_qs, quote, urljoin, urlsplit
 
 import requests
 from bs4 import BeautifulSoup, Tag
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 
 DEFAULT_API_URL = "https://gatech.instructure.com"
@@ -76,6 +75,14 @@ def now_iso() -> str:
 
 def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def canvas_access_token() -> str:
+    """Read the course token from the repository .env, not a parent process value."""
+    token = dotenv_values(ROOT / ".env").get("CANVAS_ACCESS_TOKEN")
+    if not isinstance(token, str) or not token.strip():
+        raise PipelineError("CANVAS_ACCESS_TOKEN is missing from the repository .env.")
+    return token.strip()
 
 
 def slugify(value: str) -> str:
@@ -440,31 +447,33 @@ def lesson_filename(source: dict[str, Any], target: dict[str, Any]) -> str:
 
 
 def prepare(args: argparse.Namespace) -> int:
-    load_dotenv(ROOT / ".env")
-    token = os.getenv("CANVAS_ACCESS_TOKEN")
-    if not token:
-        raise PipelineError("CANVAS_ACCESS_TOKEN is missing from .env.")
-    canvas = CanvasClient(args.api_url, args.course_id, token)
+    canvas = CanvasClient(args.api_url, args.course_id, canvas_access_token())
     pages = canvas.hydrate_lesson_pages()
     source, target, frames = resolve_topic(pages, args.topic, args.target_page_slug)
     run_slug = slugify(f"{title_number(source.get('title', '')) or args.topic}-{target.get('title', '')}")
     run_dir = Path(args.run_dir).resolve() if args.run_dir else (
         DEFAULT_RUN_ROOT / f"{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{run_slug}"
     )
+    downloaded_captions: list[tuple[str, str, dict[str, Any]]] = []
+    for number, frame in enumerate(frames, start=1):
+        print(f"Downloading captions {number}/{len(frames)}: {frame['title']}", file=sys.stderr)
+        raw, metadata = download_kaltura_caption(canvas, frame)
+        normalized = normalize_caption_text(raw)
+        if not raw.strip() or not normalized.strip():
+            raise PipelineError(f"Caption download for {frame['title']!r} was empty or could not be normalized.")
+        downloaded_captions.append((raw, normalized, metadata))
+
     raw_dir = run_dir / "transcripts" / "raw"
     normalized_dir = run_dir / "transcripts" / "normalized"
     raw_dir.mkdir(parents=True, exist_ok=True)
     normalized_dir.mkdir(parents=True, exist_ok=True)
-
     videos: list[dict[str, Any]] = []
-    for number, frame in enumerate(frames, start=1):
-        print(f"Downloading captions {number}/{len(frames)}: {frame['title']}", file=sys.stderr)
-        raw, metadata = download_kaltura_caption(canvas, frame)
-        stem = f"{number:02d}-{slugify(frame['title'])}"
+    for number, (raw, normalized, metadata) in enumerate(downloaded_captions, start=1):
+        stem = f"{number:02d}-{slugify(metadata['title'])}"
         raw_path = raw_dir / f"{stem}{caption_extension(raw)}"
         normalized_path = normalized_dir / f"{stem}.txt"
         raw_path.write_text(raw, encoding="utf-8")
-        normalized_path.write_text(normalize_caption_text(raw), encoding="utf-8")
+        normalized_path.write_text(normalized, encoding="utf-8")
         metadata.update(
             {
                 "raw_path": relative_to_root(raw_path),
@@ -530,7 +539,7 @@ def direct_child(parent: Tag, name: str) -> Tag | None:
     return None
 
 
-def validate_html_text(value: str) -> dict[str, list[str]]:
+def validate_html_text(value: str, distributed_checks: bool = False) -> dict[str, list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     if "```" in value:
@@ -563,8 +572,9 @@ def validate_html_text(value: str) -> dict[str, list[str]]:
                     errors.append(f"Inner wrapper style {key!r} must be {expected!r}.")
 
     h2_titles = [heading.get_text(" ", strip=True) for heading in soup.find_all("h2")]
-    if h2_titles != REQUIRED_H2:
-        errors.append(f"Use exactly these h2 sections in order: {', '.join(REQUIRED_H2)}.")
+    expected_h2 = REQUIRED_H2[:2] if distributed_checks else REQUIRED_H2
+    if h2_titles != expected_h2:
+        errors.append(f"Use exactly these h2 sections in order: {', '.join(expected_h2)}.")
     for heading in soup.find_all("h2"):
         styles = parse_style(heading.get("style", ""))
         if (
@@ -711,7 +721,7 @@ def validate(args: argparse.Namespace) -> int:
     if not lesson_path.exists():
         raise PipelineError(f"Missing generated lesson: {lesson_path}")
     body = lesson_path.read_text(encoding="utf-8")
-    result = validate_html_text(body)
+    result = validate_html_text(body, distributed_checks=bool(args.distributed_checks))
     if not args.skip_axe:
         result["errors"].extend(run_axe(run_dir, manifest["target_page"]["title"], body))
         result["errors"] = sorted(set(result["errors"]))
@@ -720,6 +730,7 @@ def validate(args: argparse.Namespace) -> int:
             "validated_at": now_iso(),
             "lesson_path": relative_to_root(lesson_path),
             "lesson_sha256": sha256_text(body),
+            "distributed_checks": bool(args.distributed_checks),
         }
     )
     validation_path = run_dir / "validation.json"
@@ -771,11 +782,7 @@ def require_confirmation(args: argparse.Namespace, slug: str, action: str) -> No
 
 
 def load_canvas_for_manifest(manifest: dict[str, Any]) -> CanvasClient:
-    load_dotenv(ROOT / ".env")
-    token = os.getenv("CANVAS_ACCESS_TOKEN")
-    if not token:
-        raise PipelineError("CANVAS_ACCESS_TOKEN is missing from .env.")
-    return CanvasClient(manifest["api_url"], int(manifest["course_id"]), token)
+    return CanvasClient(manifest["api_url"], int(manifest["course_id"]), canvas_access_token())
 
 
 def verified_local_lesson(run_dir: Path) -> tuple[dict[str, Any], str]:
@@ -796,6 +803,7 @@ def verified_local_lesson(run_dir: Path) -> tuple[dict[str, Any], str]:
 def publish(args: argparse.Namespace) -> int:
     run_dir = Path(args.run_dir).resolve()
     manifest, body = verified_local_lesson(run_dir)
+    validation = json.loads((run_dir / "validation.json").read_text(encoding="utf-8"))
     slug = manifest["target_page"]["slug"]
     canvas = load_canvas_for_manifest(manifest)
     current = canvas.get_page(slug)
@@ -830,7 +838,10 @@ def publish(args: argparse.Namespace) -> int:
     canvas.update_page_body(slug, body)
     stored = canvas.get_page(slug)
     stored_body = stored.get("body") or ""
-    post_validation = validate_html_text(stored_body)
+    post_validation = validate_html_text(
+        stored_body,
+        distributed_checks=bool(validation.get("distributed_checks")),
+    )
     post_validation["errors"].extend(
         run_axe(run_dir, str(stored.get("title") or slug), stored_body)
     )
@@ -898,6 +909,11 @@ def parser() -> argparse.ArgumentParser:
     validate_parser.add_argument("run_dir")
     validate_parser.add_argument("--html")
     validate_parser.add_argument("--skip-axe", action="store_true")
+    validate_parser.add_argument(
+        "--distributed-checks",
+        action="store_true",
+        help="Allow checks to appear beside the concept or example they assess instead of in their own h2 section.",
+    )
     validate_parser.set_defaults(function=validate)
 
     render_parser = subparsers.add_parser("render", help="Render a browser preview and screenshot.")

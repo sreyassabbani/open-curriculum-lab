@@ -1,0 +1,111 @@
+<div class="dp-wrapper" id="dp-wrapper">
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333333; padding: 20px; border-radius: 8px; border: 1px solid #e1e1e1;">
+<h2 style="color: #003057; border-bottom: 2px solid #B3A369; padding-bottom: 10px;">Motivating Questions and Objectives</h2>
+<p>Constrained optimization uses eigenvalues and eigenvectors to find the largest and smallest values of a quadratic form on the unit sphere.</p>
+<ul>
+<li>How can a quadratic form be optimized when \(\lVert\mathbf{x}\rVert=1\)?</li>
+<li>Why do the largest and smallest eigenvalues determine the extreme values?</li>
+<li>Where are those extreme values attained?</li>
+<li>How does an orthogonality constraint change the largest allowable value?</li>
+</ul>
+<p>After completing the exercises in this topic, you should be able to find constrained maximum and minimum values of a quadratic form and identify where they occur.</p>
+<h2 style="color: #003057; border-bottom: 2px solid #B3A369; padding-bottom: 10px;">Summary of Key Concepts</h2>
+<h3 style="color: #003057;">1. The constrained optimization setting</h3>
+<p>We want to optimize</p>
+\[
+Q(\mathbf{x})=\mathbf{x}^{T}A\mathbf{x},
+\]
+<p>where \(A\) is a real symmetric \(n\times n\) matrix. The constraint is</p>
+\[
+\lVert\mathbf{x}\rVert=1.
+\]
+<p>So \(\mathbf{x}\) must lie on the unit sphere. We want the maximum and minimum values of \(Q\), along with the unit vectors where they occur.</p>
+<div style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #B3A369; margin: 20px 0;">
+<strong>Key Idea:</strong>
+<p style="margin-bottom: 0;">On the unit sphere, the extreme values of \(Q\) are eigenvalues of \(A\). They occur at unit eigenvectors.</p>
+</div>
+<h3 style="color: #003057;">2. Extreme Values on the Unit Sphere</h3>
+<p>Let the real eigenvalues of \(A\) be ordered as</p>
+\[
+\lambda_1\geq\lambda_2\geq\cdots\geq\lambda_n,
+\]
+<p>Choose corresponding orthonormal eigenvectors \(\mathbf{u}_1,\mathbf{u}_2,\ldots,\mathbf{u}_n\). When \(\lVert\mathbf{x}\rVert=1\),</p>
+\[
+\max Q(\mathbf{x})=\lambda_1\qquad\text{and}\qquad\min Q(\mathbf{x})=\lambda_n.
+\]
+<p>If the largest eigenvalue is repeated, every unit vector in its eigenspace gives the maximum.</p>
+<p>Because \(A\) is symmetric, write \(A=PDP^T\), where the columns of \(P\) are \(\mathbf{u}_1,\ldots,\mathbf{u}_n\). Let \(\mathbf{y}=P^T\mathbf{x}\). Then</p>
+\[
+Q(\mathbf{x})=\sum_{i=1}^{n}\lambda_i y_i^2,
+\qquad
+\sum_{i=1}^{n}y_i^2=1.
+\]
+<p>So the eigenvalues are the weights in a sum of squares whose total is \(1\).</p>
+<h3 style="color: #003057;">3. Example: a diagonal quadratic form</h3>
+<p>Consider</p>
+\[
+Q(\mathbf{x})=9x_1^2+4x_2^2+3x_3^2
+\]
+<p>subject to \(\lVert\mathbf{x}\rVert=1\). Here</p>
+\[
+A=\begin{pmatrix}9 &amp; 0 &amp; 0\\0 &amp; 4 &amp; 0\\0 &amp; 0 &amp; 3\end{pmatrix}.
+\]
+<p>The eigenvalues are \(9\), \(4\), and \(3\). The maximum is \(9\) at \(\pm(1,0,0)^T\). The minimum is \(3\) at \(\pm(0,0,1)^T\).</p><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 1:</strong> Why is \(Q(\mathbf{x})\leq 9\) on the unit sphere?</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;"><summary style="color: #003057;">Click to reveal the answer</summary><div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;"><p><strong>Answer:</strong> \(9x_1^2+4x_2^2+3x_3^2\leq 9(x_1^2+x_2^2+x_3^2)=9\).</p><p style="margin-bottom: 0;"><strong>Explanation:</strong> Each coefficient is at most \(9\), and the unit-length constraint makes the sum of the squared coordinates equal to \(1\).</p></div></details>
+</div>
+<h3 style="color: #003057;">4. Finding the Extremes</h3>
+<ol>
+<li>Write \(Q(\mathbf{x})=\mathbf{x}^{T}A\mathbf{x}\) and check that \(A\) is symmetric.</li>
+<li>Find and order the eigenvalues.</li>
+<li>Choose unit eigenvectors for the largest and smallest eigenvalues.</li>
+<li>Report the extreme values and where they occur.</li>
+</ol>
+<div style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #B3A369; margin: 20px 0;">
+<strong>Important:</strong>
+<p style="margin-bottom: 0;">Normalize an eigenvector before using it as a point on the unit sphere.</p>
+</div>
+<h3 style="color: #003057;">5. Repeated eigenvalues and orthogonality constraints</h3>
+<p>In the repeated-eigenvalue example, the eigenvalues are \(1,1,-1\). Since \(A-I\) has one pivot and two free variables, the eigenspace for eigenvalue \(1\) is two-dimensional. Every unit vector in that eigenspace is a maximizer.</p>
+<p>A nonzero eigenvector for \(-1\) is \((0,1,1)^T\). The maximizing points form a great circle on the unit sphere, while the minimum occurs at opposite points.</p><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 2:</strong> What is the dimension of the eigenspace for eigenvalue \(1\)?</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;"><summary style="color: #003057;">Click to reveal the answer</summary><div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;"><p><strong>Answer:</strong> \(2\).</p><p style="margin-bottom: 0;"><strong>Explanation:</strong> The eigenspace is \(\operatorname{Nul}(A-I)\). Its two free variables give it dimension \(2\).</p></div></details>
+</div><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 3:</strong> The smallest eigenvalue is \(-1\). Normalize \((0,1,1)^T\), then state the minimum value.</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;"><summary style="color: #003057;">Click to reveal the answer</summary><div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;"><p><strong>Answer:</strong> The unit eigenvectors are \(\pm(0,1,1)^T/\sqrt{2}\), and the minimum value is \(-1\).</p><p style="margin-bottom: 0;"><strong>Explanation:</strong> The vector has length \(\sqrt{2}\), so dividing by \(\sqrt{2}\) gives a permitted unit vector. The smallest eigenvalue is \(-1\).</p></div></details>
+</div>
+<p>Now add the constraint \(\mathbf{x}\perp\mathbf{u}_1\), along with</p>
+\[
+\lVert\mathbf{x}\rVert=1\qquad\text{and}\qquad\mathbf{x}\cdot\mathbf{u}_1=0.
+\]
+<p>The largest allowed value is now \(\lambda_2\), at \(\mathbf{u}_2\). The minimum is still \(\lambda_n\), at \(\mathbf{u}_n\).</p>
+<p>You can add more orthogonality constraints, but this topic uses one.</p>
+<div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 4:</strong> Let \(A=PDP^T\) and \(\mathbf{y}=P^T\mathbf{x}\). If \(\mathbf{x}\perp\mathbf{u}_1\), what is \(y_1\)? Which largest eigenvalue can still determine \(Q(\mathbf{x})\) on the unit sphere?</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;"><summary style="color: #003057;">Click to reveal the answer</summary><div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;"><p><strong>Answer:</strong> \(y_1=0\), and the largest remaining eigenvalue is \(\lambda_2\).</p><p style="margin-bottom: 0;"><strong>Explanation:</strong> \(y_1\) measures the component of \(\mathbf{x}\) in the \(\mathbf{u}_1\) direction. Orthogonality removes that direction, so the \(\lambda_1y_1^2\) term is zero.</p></div></details>
+</div>
+<p>For example, let</p>
+\[
+A=\begin{pmatrix}1 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 1\\0 &amp; 1 &amp; 0\end{pmatrix}
+\]
+<p>and require \(\lVert\mathbf{x}\rVert=1\) and \(\mathbf{x}\cdot\mathbf{e}_1=0\). The eigenvalues are \(1,1,-1\). Under these constraints, the maximum is \(1\), at \(\pm(0,1,1)^T/\sqrt{2}\).</p>
+<h3 style="color: #003057;">6. Summary: Constrained Optimization</h3>
+<div class="dp-table-scroll">
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<thead><tr style="background-color: #003057; color: white;"><th style="padding: 10px; border: 1px solid #dddddd;">Concept</th><th style="padding: 10px; border: 1px solid #dddddd;">Meaning</th><th style="padding: 10px; border: 1px solid #dddddd;">Main Check</th></tr></thead>
+<tbody>
+<tr><td style="padding: 10px; border: 1px solid #dddddd;">Quadratic form</td><td style="padding: 10px; border: 1px solid #dddddd;">\(Q(\mathbf{x})=\mathbf{x}^{T}A\mathbf{x}\), with \(A\) symmetric</td><td style="padding: 10px; border: 1px solid #dddddd;">Find the eigenvalues.</td></tr>
+<tr><td style="padding: 10px; border: 1px solid #dddddd;">Unit-length constraint</td><td style="padding: 10px; border: 1px solid #dddddd;">\(\lVert\mathbf{x}\rVert=1\)</td><td style="padding: 10px; border: 1px solid #dddddd;">Use unit eigenvectors.</td></tr>
+<tr><td style="padding: 10px; border: 1px solid #dddddd;">Extreme values</td><td style="padding: 10px; border: 1px solid #dddddd;">Maximum \(\lambda_1\); minimum \(\lambda_n\)</td><td style="padding: 10px; border: 1px solid #dddddd;">Match each value to its eigenvector or eigenspace.</td></tr>
+<tr><td style="padding: 10px; border: 1px solid #dddddd;">Orthogonality constraint</td><td style="padding: 10px; border: 1px solid #dddddd;">\(\mathbf{x}\perp\mathbf{u}_1\) removes the top direction</td><td style="padding: 10px; border: 1px solid #dddddd;">The maximum is \(\lambda_2\).</td></tr>
+</tbody>
+</table>
+</div>
+
+
+
+
+
+
+</div>
+</div>

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -105,6 +106,16 @@ class TopicResolutionTests(unittest.TestCase):
 
 
 class CaptionTests(unittest.TestCase):
+    def test_canvas_token_comes_from_repository_dotenv_not_process_environment(self) -> None:
+        with patch.dict(os.environ, {"CANVAS_ACCESS_TOKEN": "stale-process-token"}):
+            with patch.object(canvas_lesson, "ROOT", Path("/repository")):
+                with patch.object(
+                    canvas_lesson,
+                    "dotenv_values",
+                    return_value={"CANVAS_ACCESS_TOKEN": "repository-token"},
+                ):
+                    self.assertEqual(canvas_lesson.canvas_access_token(), "repository-token")
+
     def test_caption_selection_prefers_ready_english_srt(self) -> None:
         selected = canvas_lesson.select_english_caption(
             [
@@ -151,6 +162,16 @@ class ValidationTests(unittest.TestCase):
     def test_valid_fragment_passes(self) -> None:
         result = canvas_lesson.validate_html_text(valid_lesson())
         self.assertEqual(result["errors"], [])
+
+    def test_distributed_checks_omit_the_standalone_h2(self) -> None:
+        fragment = valid_lesson().replace(
+            f'<h2 style="{H2_STYLE}">Comprehension Checks</h2>',
+            "",
+        )
+        self.assertEqual(
+            canvas_lesson.validate_html_text(fragment, distributed_checks=True)["errors"],
+            [],
+        )
 
     def test_banned_source_language_and_raw_matrix_ampersand_fail(self) -> None:
         broken = valid_lesson().replace(

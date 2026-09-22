@@ -1,0 +1,163 @@
+<div class="dp-wrapper" id="dp-wrapper">
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333333; padding: 20px; border-radius: 8px; border: 1px solid #e1e1e1;">
+<h2 style="color: #003057; border-bottom: 2px solid #B3A369; padding-bottom: 10px;">Motivating Questions and Objectives</h2>
+<p>Orthogonal projections provide a systematic way to replace a vector by its closest representative in a subspace.</p>
+<ul>
+<li>What can be done when \(A\mathbf{x}=\mathbf{y}\) is inconsistent because \(\mathbf{y}\notin\operatorname{Col} A\)?</li>
+<li>How can a vector be separated into a component in a subspace and a component perpendicular to that subspace?</li>
+<li>Why is an orthogonal projection the closest vector in the subspace?</li>
+<li>How is the distance from a vector to a subspace calculated?</li>
+</ul>
+<p>After completing the exercises in this topic, you should be able to apply the Orthogonal Decomposition Theorem, calculate orthogonal projections, identify the perpendicular residual, apply the Best Approximation Theorem, and calculate the distance from a vector to a subspace.</p>
+<h2 style="color: #003057; border-bottom: 2px solid #B3A369; padding-bottom: 10px;">Summary of Key Concepts</h2>
+<h3 style="color: #003057;">1. Motivation: Approximating an Inconsistent System</h3>
+<p>Suppose \(A\) is a \(3\times 2\) matrix and \(\mathbf{y}\in\mathbb{R}^3\), but \(\mathbf{y}\notin\operatorname{Col} A\). Then \(A\mathbf{x}=\mathbf{y}\) has no solution. Instead of finding an exact representation of \(\mathbf{y}\), we can look for the vector \(\widehat{\mathbf{y}}\in\operatorname{Col} A\) that is closest to \(\mathbf{y}\).</p>
+<div style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #B3A369; margin: 20px 0;"><strong>Key Idea:</strong>
+<p style="margin-bottom: 0;">The closest vector is the orthogonal projection \(\widehat{\mathbf{y}}=\operatorname{proj}_{\operatorname{Col} A}\mathbf{y}\). The error \(\mathbf{y}-\widehat{\mathbf{y}}\) is perpendicular to every vector in \(\operatorname{Col} A\).</p>
+</div><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 1:</strong> Let \(A\) be a \(3\times 2\) matrix and suppose \(\mathbf{y}\notin\operatorname{Col} A\). Is \(A\mathbf{x}=\mathbf{y}\) consistent, and which vector in \(\operatorname{Col} A\) best approximates \(\mathbf{y}\)?</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;">
+<summary style="color: #003057;">Click to reveal the answer</summary>
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+<p><strong>Answer:</strong> The system is inconsistent. The best approximation is \(\operatorname{proj}_{\operatorname{Col} A}\mathbf{y}\).</p>
+<p style="margin-bottom: 0;"><strong>Explanation:</strong> A system \(A\mathbf{x}=\mathbf{y}\) is consistent exactly when \(\mathbf{y}\in\operatorname{Col} A\). Orthogonal projection gives the unique closest vector in the column space.</p>
+</div>
+</details></div>
+<h3 style="color: #003057;">2. Orthogonal Complements</h3>
+<p>For a subspace \(W\subseteq\mathbb{R}^n\), the orthogonal complement of \(W\) is</p>
+\[ W^\perp= \left\{ \mathbf{z}\in\mathbb{R}^n: \mathbf{z}\cdot\mathbf{w}=0 \text{ for every }\mathbf{w}\in W \right\}. \]
+<p>A vector in \(W^\perp\) is perpendicular to the entire subspace, not merely to one selected vector in the subspace.</p>
+<div style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #B3A369; margin: 20px 0;"><strong>Important:</strong>
+<p style="margin-bottom: 0;">The only vector belonging to both \(W\) and \(W^\perp\) is \(\mathbf{0}\). This fact makes the orthogonal decomposition unique.</p>
+</div>
+<h3 style="color: #003057;">3. The Orthogonal Decomposition Theorem</h3>
+<p>Let \(W\) be a subspace of \(\mathbb{R}^n\). Every vector \(\mathbf{y}\in\mathbb{R}^n\) has a unique decomposition</p>
+\[ \mathbf{y} = \widehat{\mathbf{y}}+\mathbf{z}, \qquad \widehat{\mathbf{y}}\in W, \qquad \mathbf{z}\in W^\perp. \]
+<p>The two components are</p>
+\[ \widehat{\mathbf{y}} = \operatorname{proj}_W\mathbf{y}, \qquad \mathbf{z} = \mathbf{y}-\operatorname{proj}_W\mathbf{y}. \]
+<div style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #B3A369; margin: 20px 0;"><strong>Key Idea:</strong>
+<p style="margin-bottom: 0;">The projection is the component of \(\mathbf{y}\) in \(W\), while the residual is the component in \(W^\perp\).</p>
+</div>
+<p>Two useful special cases are:</p>
+<ul>
+<li>If \(\mathbf{y}\in W\), then \(\operatorname{proj}_W\mathbf{y}=\mathbf{y}\) and \(\mathbf{z}=\mathbf{0}\).</li>
+<li>If \(\mathbf{y}\in W^\perp\), then \(\operatorname{proj}_W\mathbf{y}=\mathbf{0}\) and \(\mathbf{z}=\mathbf{y}\).</li>
+</ul><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 2:</strong> Suppose \(\mathbf{y}=\widehat{\mathbf{y}}+\mathbf{z}\), where \(\widehat{\mathbf{y}}\in W\) and \(\mathbf{z}\in W^\perp\). Which component equals \(\operatorname{proj}_W\mathbf{y}\)?</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;">
+<summary style="color: #003057;">Click to reveal the answer</summary>
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+<p><strong>Answer:</strong> \(\widehat{\mathbf{y}}\).</p>
+<p style="margin-bottom: 0;"><strong>Explanation:</strong> The orthogonal projection is the component of \(\mathbf{y}\) that lies in \(W\); the remaining component lies in \(W^\perp\).</p>
+</div>
+</details></div>
+<h3 style="color: #003057;">4. Calculating the Projection</h3>
+<p>If \(\{\mathbf{u}_1,\ldots,\mathbf{u}_p\}\) is an orthogonal basis for \(W\), then</p>
+\[ \operatorname{proj}_W\mathbf{y} = \sum_{i=1}^{p} \frac{\mathbf{y}\cdot\mathbf{u}_i} {\mathbf{u}_i\cdot\mathbf{u}_i} \mathbf{u}_i. \]
+<div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 3:</strong> Let \(W=\operatorname{Span}\{(1,0,0),(0,1,0)\}\) and \(\mathbf{y}=(3,-1,4)\). Find \(\operatorname{proj}_W\mathbf{y}\) and the perpendicular residual.</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;">
+<summary style="color: #003057;">Click to reveal the answer</summary>
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+<p><strong>Answer:</strong> \(\operatorname{proj}_W\mathbf{y}=(3,-1,0)\) and \(\mathbf{z}=(0,0,4)\).</p>
+<p style="margin-bottom: 0;"><strong>Explanation:</strong> The subspace is the \(xy\)-plane. The projection keeps the first two coordinates, and the residual is perpendicular to that plane.</p>
+</div>
+</details></div><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 4:</strong> Suppose \(\{\mathbf{u}_1,\ldots,\mathbf{u}_p\}\) is an orthonormal basis for \(W\). How would the projection formula simplify?</p>
+\[ \operatorname{proj}_W\mathbf{y} = \sum_{i=1}^{p} \frac{\mathbf{y}\cdot\mathbf{u}_i} {\mathbf{u}_i\cdot\mathbf{u}_i} \mathbf{u}_i. \]<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;">
+<summary style="color: #003057;">Click to reveal the answer</summary>
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+<p><strong>Answer:</strong></p>
+\[ \operatorname{proj}_W\mathbf{y} = \sum_{i=1}^{p} (\mathbf{y}\cdot\mathbf{u}_i)\mathbf{u}_i. \]
+<p style="margin-bottom: 0;"><strong>Explanation:</strong> Each vector in an orthonormal basis has length \(1\), so \(\mathbf{u}_i\cdot\mathbf{u}_i=1\).</p>
+</div>
+</details></div><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 5:</strong> True or false: \(\operatorname{proj}_W(\operatorname{proj}_W\mathbf{v})=\operatorname{proj}_W\mathbf{v}\) for every \(\mathbf{v}\in\mathbb{R}^n\).</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;">
+<summary style="color: #003057;">Click to reveal the answer</summary>
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+<p><strong>Answer:</strong> True.</p>
+<p style="margin-bottom: 0;"><strong>Explanation:</strong> The first projection already lies in \(W\), and projecting a vector in \(W\) onto \(W\) leaves it unchanged.</p>
+</div>
+</details></div><h3 style="color: #003057;">5. Example: Decomposing a Vector in \(\mathbb{R}^3\)</h3>
+<p>Let</p>
+\[ \mathbf{y} = \begin{pmatrix} 4\\ 0\\ 3 \end{pmatrix}, \qquad \mathbf{u}_1 = \begin{pmatrix} 2\\ 2\\ 0 \end{pmatrix}, \qquad \mathbf{u}_2 = \begin{pmatrix} 0\\ 0\\ 1 \end{pmatrix}, \]
+<p>and let \(W=\operatorname{Span}\{\mathbf{u}_1,\mathbf{u}_2\}\). Since \(\mathbf{u}_1\cdot\mathbf{u}_2=0\), the basis is orthogonal.</p>
+<p>The projection coefficients are</p>
+\[ \frac{\mathbf{y}\cdot\mathbf{u}_1} {\mathbf{u}_1\cdot\mathbf{u}_1} = \frac{8}{8} = 1, \qquad \frac{\mathbf{y}\cdot\mathbf{u}_2} {\mathbf{u}_2\cdot\mathbf{u}_2} = \frac{3}{1} = 3. \]
+<p>Therefore,</p>
+\[ \widehat{\mathbf{y}} = 1\mathbf{u}_1+3\mathbf{u}_2 = \begin{pmatrix} 2\\ 2\\ 3 \end{pmatrix}. \]
+<p>The perpendicular component is</p>
+\[ \mathbf{z} = \mathbf{y}-\widehat{\mathbf{y}} = \begin{pmatrix} 4\\ 0\\ 3 \end{pmatrix} - \begin{pmatrix} 2\\ 2\\ 3 \end{pmatrix} = \begin{pmatrix} 2\\ -2\\ 0 \end{pmatrix}. \]
+<p>The checks \(\mathbf{z}\cdot\mathbf{u}_1=0\) and \(\mathbf{z}\cdot\mathbf{u}_2=0\) confirm that \(\mathbf{z}\in W^\perp\). Thus,</p>
+\[ \mathbf{y} = \begin{pmatrix} 2\\ 2\\ 3 \end{pmatrix} + \begin{pmatrix} 2\\ -2\\ 0 \end{pmatrix}, \qquad \widehat{\mathbf{y}}\in W, \quad \mathbf{z}\in W^\perp. \]
+<h3 style="color: #003057;">6. The Best Approximation Theorem</h3>
+<p>Let \(W\) be a subspace of \(\mathbb{R}^n\), and let \(\widehat{\mathbf{y}}=\operatorname{proj}_W\mathbf{y}\). For every \(\mathbf{v}\in W\),</p>
+\[ \left\| \mathbf{y}-\widehat{\mathbf{y}} \right\| \leq \left\| \mathbf{y}-\mathbf{v} \right\|. \]
+<p>If \(\mathbf{v}\neq\widehat{\mathbf{y}}\), the inequality is strict. Therefore, \(\widehat{\mathbf{y}}\) is the unique vector in \(W\) closest to \(\mathbf{y}\).</p>
+<p>To understand this relationship, write</p>
+\[ \mathbf{y}-\mathbf{v} = (\mathbf{y}-\widehat{\mathbf{y}}) + (\widehat{\mathbf{y}}-\mathbf{v}). \]
+<p>The first vector belongs to \(W^\perp\), while the second belongs to \(W\), so they are orthogonal. The Pythagorean identity gives</p>
+\[ \left\| \mathbf{y}-\mathbf{v} \right\|^2 = \left\| \mathbf{y}-\widehat{\mathbf{y}} \right\|^2 + \left\| \widehat{\mathbf{y}}-\mathbf{v} \right\|^2. \]
+<p>The second term is nonnegative and equals zero only when \(\mathbf{v}=\widehat{\mathbf{y}}\).</p>
+<div style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #B3A369; margin: 20px 0;"><strong>Key Idea:</strong>
+<p style="margin-bottom: 0;">The perpendicular path from \(\mathbf{y}\) to \(W\) is the shortest path. Every other vector in \(W\) adds a nonzero component within the subspace.</p>
+</div><div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 6:</strong> Let \(\widehat{\mathbf{y}}=\operatorname{proj}_W\mathbf{y}\) and \(\mathbf{v}\in W\). If \(\|\mathbf{y}-\widehat{\mathbf{y}}\|=3\) and \(\|\widehat{\mathbf{y}}-\mathbf{v}\|=4\), find \(\|\mathbf{y}-\mathbf{v}\|\).</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;">
+<summary style="color: #003057;">Click to reveal the answer</summary>
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+<p><strong>Answer:</strong> \(5\).</p>
+<p style="margin-bottom: 0;"><strong>Explanation:</strong> The two components are orthogonal, so \(\|\mathbf{y}-\mathbf{v}\|^2=3^2+4^2=25\).</p>
+</div>
+</details></div>
+<h3 style="color: #003057;">7. Distance from a Vector to a Subspace</h3>
+<p>The distance from \(\mathbf{y}\) to \(W\) is the length of the perpendicular residual:</p>
+\[ \operatorname{dist}(\mathbf{y},W) = \left\| \mathbf{y}-\operatorname{proj}_W\mathbf{y} \right\| = \|\mathbf{z}\|. \]
+<div style="background-color: #f0f4f7; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+<p style="margin-top: 0;"><strong>Question 7:</strong> In the example with \(\mathbf{y}=(4,0,3)\) and \(\widehat{\mathbf{y}}=(2,2,3)\), calculate \(\operatorname{dist}(\mathbf{y},W)\).</p>
+<details style="cursor: pointer; background: white; padding: 10px; border-radius: 5px; border: 1px solid #cccccc;">
+<summary style="color: #003057;">Click to reveal the answer</summary>
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc;">
+<p><strong>Answer:</strong> \(2\sqrt{2}\).</p>
+<p style="margin-bottom: 0;"><strong>Explanation:</strong> The residual is \((2,-2,0)\), whose norm is \(\sqrt{2^2+(-2)^2}=\sqrt{8}=2\sqrt{2}\).</p>
+</div>
+</details></div><p>For the example above,</p>
+\[ \operatorname{dist}(\mathbf{y},W) = \left\| \begin{pmatrix} 2\\ -2\\ 0 \end{pmatrix} \right\| = \sqrt{2^2+(-2)^2} = \sqrt{8} = 2\sqrt{2}. \]
+
+<h3 style="color: #003057;">8. Summary: Orthogonal Decomposition and Best Approximation</h3>
+<div class="dp-table-scroll">
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<thead>
+<tr style="background-color: #003057; color: white;">
+<th style="padding: 10px; border: 1px solid #dddddd;">Concept</th>
+<th style="padding: 10px; border: 1px solid #dddddd;">Meaning</th>
+<th style="padding: 10px; border: 1px solid #dddddd;">Main Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding: 10px; border: 1px solid #dddddd;"><strong>Orthogonal complement</strong></td>
+<td style="padding: 10px; border: 1px solid #dddddd;">All vectors perpendicular to every vector in \(W\)</td>
+<td style="padding: 10px; border: 1px solid #dddddd;">\(\mathbf{z}\cdot\mathbf{w}=0\) for every \(\mathbf{w}\in W\)</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #dddddd;"><strong>Orthogonal decomposition</strong></td>
+<td style="padding: 10px; border: 1px solid #dddddd;">\(\mathbf{y}=\widehat{\mathbf{y}}+\mathbf{z}\), with one component in \(W\) and one in \(W^\perp\)</td>
+<td style="padding: 10px; border: 1px solid #dddddd;">\(\widehat{\mathbf{y}}=\operatorname{proj}_W\mathbf{y}\) and \(\mathbf{z}=\mathbf{y}-\widehat{\mathbf{y}}\)</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #dddddd;"><strong>Best approximation</strong></td>
+<td style="padding: 10px; border: 1px solid #dddddd;">The projection is the unique closest vector in \(W\)</td>
+<td style="padding: 10px; border: 1px solid #dddddd;">\(\|\mathbf{y}-\widehat{\mathbf{y}}\|\leq\|\mathbf{y}-\mathbf{v}\|\) for every \(\mathbf{v}\in W\)</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #dddddd;"><strong>Distance to a subspace</strong></td>
+<td style="padding: 10px; border: 1px solid #dddddd;">Length of the perpendicular residual</td>
+<td style="padding: 10px; border: 1px solid #dddddd;">\(\operatorname{dist}(\mathbf{y},W)=\|\mathbf{y}-\operatorname{proj}_W\mathbf{y}\|\)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
