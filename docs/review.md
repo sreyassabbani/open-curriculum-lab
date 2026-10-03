@@ -1,96 +1,95 @@
-# Open Curriculum Lab: project review
+# Open Curriculum Lab: how the workflow has changed
 
-For Amogh and Dr. Mayer · Reconciled October 3, 2026
+For Amogh and Dr. Mayer · Updated October 3, 2026
 
-## The idea
+## Where we started
 
-Use AI to help turn course videos and textbook readings into clear Canvas
-lessons, with instructor review before release. The project also includes
-tools for listing course pages and finding some accessibility problems.
+The starting point was a transcript-and-prompt workflow in ChatGPT. Course
+captions and a lesson-writing prompt were supplied in a conversation to produce
+HTML for Canvas. Someone still had to gather the material, guide revisions,
+review the result, and move it into the course.
 
-**A MATH 2551 lesson example exists. An automatic connection from ChatGPT to
-the live course does not.** Integration work is deferred while we review the
-materials and whether the workflow is practical.
+The next idea was to make that process reusable: name a topic, collect its
+video captions, follow the same authoring instructions, and produce a lesson
+that could be checked and, with approval, saved to Canvas. That became the
+repository workflow, first for MATH 1554 and then as an experiment for MATH 2551.
 
-## How a lesson should be built
+## What the repository added
 
-1. Read the actual Canvas Topic page, the course outline, and relevant earlier
-   and later topics. Confirm which Lesson it belongs to.
-2. Read the complete English captions for **every** video on that Topic page.
-3. Read the relevant OpenStax section and adjacent sections alongside those
-   captions. Captions supply course emphasis and examples; OpenStax supplies
-   definitions, conditions, geometric explanations, and additional checks.
-4. Write one connected lesson, placing short comprehension checks throughout
-   it, near the concepts or examples they test, with answers nearby.
-5. Review the mathematics, source coverage, and accessibility. Check equations
-   and layout in the actual Canvas page before releasing it to students.
+The local tools find the course pages, retrieve English captions from Kaltura
+when access permits, and save the sources together. The agent uses those
+sources and the writing instructions to draft and revise a lesson. For MATH
+1554, the tools also check the HTML, make a preview, and support a separately
+approved update to an existing Canvas page.
 
-If any source is missing, pause drafting and identify exactly what is needed.
-Check caption errors and disagreements with the textbook explicitly.
+This still requires someone operating the project with course access and a
+local development setup. It reduces repeated work, but it does not remove
+mathematical review or the need to inspect the actual Canvas page. Caption
+retrieval is also imperfect: some MATH 2551 videos needed exports from an
+already signed-in browser. The MATH 2551 helper currently prepares sources
+only; the earlier lesson update was a separate authorized operation.
 
-### The course controls the order
+The project also produced a [MATH 1554 accessibility audit](../reports/WCAG_2.1_AA_AUDIT.md).
+That July 14 report identifies problems detectable in page content. It is a
+historical scan, and it does not establish that the findings have been fixed.
 
-MATH 2551 does **not** follow OpenStax section order exactly. For example:
+## What changed for MATH 2551
 
-| Course Topic | Lesson / OpenStax section | Scope |
-| --- | --- | --- |
-| 2.3: Partial Derivatives | 4.3 | First, higher, and mixed partial derivatives; geometric interpretation; brief PDE context. |
-| 2.4: The Chain Rule | 4.5 | Multivariable chain rule and implicit differentiation. |
-| 2.6: Tangent Planes and Differentials | 4.4 | Differentiability, tangent planes, and linear approximation. |
+The initial MATH 2551 instructions treated captions as the primary source and
+asked for a textbook cross-check. We revised that approach to read all video
+captions and the relevant OpenStax sections in parallel. The captions establish
+course emphasis and examples; the textbook contributes definitions, conditions,
+geometric explanations, and useful additional examples. Errors or substantive
+disagreements need to be checked explicitly.
 
-A preview of a later method can be mentioned briefly; its full treatment belongs
-in that later lesson. Ordinary single-variable differentiation rules still
-apply in 4.3. Recheck the course mapping for each lesson. Compare OpenStax
-[4.3](https://openstax.org/books/calculus-volume-3/pages/4-3-partial-derivatives),
+The actual course sequence determines what belongs in each lesson. MATH 2551
+is not a one-to-one copy of OpenStax: Topic 2.3 maps to Lesson 4.3, Topic 2.4 to
+4.5, and Topic 2.6 to 4.4. Lesson 4.3 covers partial derivatives; the full
+multivariable chain rule and implicit differentiation belong in 4.5. Tangent
+planes and linear approximation belong in 4.4. A video can preview a later
+method without making its full treatment part of the current lesson. Compare
+OpenStax [4.3](https://openstax.org/books/calculus-volume-3/pages/4-3-partial-derivatives),
 [4.4](https://openstax.org/books/calculus-volume-3/pages/4-4-tangent-planes-and-linear-approximations),
 and [4.5](https://openstax.org/books/calculus-volume-3/pages/4-5-the-chain-rule).
 
-## What exists today
+We also moved short comprehension checks beside the concepts and examples they
+test, with answers nearby. The lesson should develop as a connected explanation;
+its layout should follow the material rather than force every idea into a
+list, table, or callout. These changes are recorded in the
+[authoring skill](../.agents/skills/build-math2551-lesson/SKILL.md) and
+[course context map](../.agents/skills/build-math2551-lesson/references/course-context.md).
 
-| Item | Evidence and limits |
-| --- | --- |
-| Lesson 4.3 | Written to Canvas September 15; the original chat reported checking repaired equations and leaving the page unpublished. The September 22 [saved revision](../output/lessons/4.3-partial-derivatives.html) narrows scope and distributes checks. The current live page has not been rechecked for this review. |
-| Authoring instructions | The [MATH 2551 skill](../.agents/skills/build-math2551-lesson/SKILL.md) and [course map](../.agents/skills/build-math2551-lesson/references/course-context.md) record the source and scope rules above. |
-| Local tools | MATH 1554 has preparation, validation, preview, and separately authorized Canvas updates. MATH 2551's helper prepares sources only. Automatic captions can fail and require browser exports. |
-| ChatGPT plugin | [MATH 2551 Lesson Builder](https://chatgpt.com/plugins/plugins_6ab86870d7b881919c72a9eef0635517), v0.3.0, supplies instructions for drafting and review. It is private; reviewer access is unconfirmed. No live Canvas access or publishing tool. |
-| Accessibility audit | The [July 14 MATH 1554 report](../reports/WCAG_2.1_AA_AUDIT.md) is a historical page-body scan. It does not certify current accessibility or establish that findings were fixed. |
+Lesson 4.3 was written to Canvas on September 15. The original chat reported
+checking the repaired equation rendering and leaving the page unpublished.
+The September 22 [saved revision](../output/lessons/4.3-partial-derivatives.html)
+narrows the scope and distributes the checks. That saved revision is the
+reference for this review; its agreement with the current
+[Canvas page](https://gatech.instructure.com/courses/588672/pages/lesson-4-dot-3-partial-derivatives)
+has not been rechecked. The Canvas link requires course access.
 
-The [Canvas Lesson 4.3 page](https://gatech.instructure.com/courses/588672/pages/lesson-4-dot-3-partial-derivatives)
-requires course access. The saved revision is the reference for this review.
+## The ChatGPT plugin and the remaining practical question
 
-## ChatGPT access: what is practical now
+The plugin was an attempt to make the authoring guidance usable in ordinary
+ChatGPT Chat without asking everyone to install the repository or connect
+GitHub. The current [MATH 2551 Lesson Builder](https://chatgpt.com/plugins/plugins_6ab86870d7b881919c72a9eef0635517)
+is private, and access for other reviewers has not been confirmed. It can guide
+drafting and review from supplied sources. It cannot retrieve the live Canvas
+course or save a lesson there. Someone still has to provide the Topic-page
+contents, course context, and every video's complete captions, then transfer
+the reviewed result into Canvas. Missing sources must be identified before
+course-aligned drafting begins.
 
-Supply the Topic-page contents, course context, and complete captions. The
-plugin uses them with OpenStax to draft or review a lesson. An authorized editor
-copies the reviewed HTML into Canvas and checks the page. End users need no
-GitHub connector, API key, or local setup. Obtaining all the source files still
-takes manual effort, and that burden needs review.
+We explored a live connection to remove that manual source-gathering step. A
+[local prototype](https://github.com/sreyassabbani/open-curriculum-lab/tree/canvas-mcp-bridge/canvas_bridge)
+exists, but it uses one operator's personal token. A shared version would need
+a maintained service, institutional support for a Canvas sign-in flow, and
+permission checks for each user. [Canvas's multi-user access requirements](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth)
+and [OpenAI's plugin authentication requirements](https://developers.openai.com/plugins/build/auth)
+explain why a personal token alone is insufficient. Nothing has been deployed,
+and no administrator request has been sent. This integration work is deferred.
 
-Chat can use code tools when available to check files and calculations. That
-does not automatically give it Canvas access or run this repository's scripts.
-A GitHub connection supplies repository access, not a Canvas login.
-
-## Why live Canvas access is deferred
-
-There is a [read-only source prototype](https://github.com/sreyassabbani/open-curriculum-lab/tree/canvas-mcp-bridge/canvas_bridge)
-using one operator's personal token. It cannot provide each course member their
-own access. No service or ChatGPT connection is deployed; no administrator
-request has been sent.
-
-A shared version needs a maintained service and an approved Canvas sign-in
-flow. [Canvas requires multi-user applications to use OAuth](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth)
-instead of collecting personal tokens; [OpenAI also requires authorization for authenticated plugin access](https://developers.openai.com/plugins/build/auth).
-Hosting, institutional approval, permission checks, and reliable captions remain
-unresolved. The connection proposal and unsent administrator email are deferred
-references, not an agreed plan.
-
-## Requested review
-
-- Does Lesson 4.3 have the right scope, examples, and level of explanation?
-- Are the distributed checks and Canvas presentation useful for students?
-- Is supplying source files practical for a small authoring pilot, or does that
-  burden make the workflow unsuitable?
-
-This review does not assume that the rest of the course is complete or that a
-live integration will proceed. [Developer details](development.md) are available
-separately.
+For now, the useful review is whether Lesson 4.3 has the right scope, explanations,
+and checks, and whether the remaining manual work makes this approach practical.
+We have an authoring experiment and a lesson to examine; we have not established
+a workflow that anyone with ChatGPT can use against the live course. Technical
+setup and implementation details are in the [developer guide](development.md).

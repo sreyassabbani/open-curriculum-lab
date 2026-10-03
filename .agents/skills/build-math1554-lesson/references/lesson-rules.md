@@ -45,6 +45,8 @@ Give construction questions a complete object and property. For example, ask stu
 
 Write directly to MATH 1554 students. Be clear, polished, concise, student-friendly, mathematically accurate, and not proof-heavy or overly casual.
 
+Within the required course frame below, let the content determine its presentation. Use connected prose to explain reasoning, lists for distinct items or ordered actions, and tables for useful comparisons. Avoid unnecessary subheadings, labels, callouts, or repeated summaries. The fixed Canvas frame is a course convention; it is not a template for project documentation, review reports, or conversational answers.
+
 Useful labels include **Key Idea**, **Quick Check**, **Important**, **Example**, **Process**, and **Summary**. Use a label only when the box adds information. Delete a Process box that repeats the adjacent formula or worked example.
 
 Avoid “obviously,” “trivial,” “just,” “we proved,” “how to prove,” and references to the source medium.

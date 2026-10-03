@@ -35,6 +35,8 @@ Never print or copy the Canvas token, launch URLs, Kaltura sessions, signed medi
 
 ## Subsequent authoring
 
+Decide what the lesson needs to explain before choosing its layout. Use connected prose for reasoning, lists for distinct items or ordered actions, and tables for useful comparisons. Add headings and callouts only where they help the reader. Let the material determine the structure; avoid unnecessary labels, repeated summaries, or forcing every concept into the same definition/example/check template.
+
 Read the matching section of [OpenStax Calculus Volume 3](https://openstax.org/details/books/calculus-volume-3) alongside all source captions. Treat them as parallel sources: use the captions for course emphasis and examples, and the textbook for definitions, conditions, geometric explanations, and useful checks. Do not assume a one-to-one match. Before choosing objectives and examples, inspect the neighboring Canvas Topic and Lesson titles and the relevant OpenStax sections; use [course context](references/course-context.md) as a starting map, then verify the current course. When a source video previews material assigned to a later lesson, acknowledge the connection briefly and leave the full derivation and practice to that later lesson. Resolve genuine source disagreements explicitly rather than silently copying a caption error.
 
 Place short comprehension checks immediately after the concept or worked example they test. Space them through the lesson, with answers near each question; do not collect them in a final quiz section. Check that objectives, summary material, and study links reflect the actual lesson scope.
