@@ -1,4 +1,11 @@
-# Georgia Tech Canvas access request
+# Deferred draft: Georgia Tech Canvas access inquiry
+
+**Not sent. Live integration work is deferred.** This is a historical draft,
+not a current request to obtain approval or credentials. Start with the
+[project review](../docs/review.md) for the current status and review questions.
+The proposed shared service, sign-in flow, and hosting arrangements below have
+not been implemented. These endpoint scopes describe the prototype; they are
+not an approved production authorization design.
 
 This is a draft for the plugin operator to send to the Georgia Tech Digital Learning Team at [canvas@gatech.edu](mailto:canvas@gatech.edu). Do not send a personal Canvas API token or a client secret in email. This is an initial feasibility question; the service URL and OAuth redirect URI can be supplied after the host is chosen.
 
